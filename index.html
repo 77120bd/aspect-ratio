@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aspect Ratio Calculator</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justified">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+          <h1 class="centered">Aspect Ratio Calculator</h1>
+        </div>
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+          <h2>
+            This online tool will calculate on which side (be it width or height)
+            you need to adjust your image to get your desired ratio.
+          </h2>
+        </div>
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+          <form id="validation">
+            <table class="table">
+              <tr>
+                <th></th>
+                <th class="centered">WIDTH</th>
+                <th class="centered"></th>
+                <th class="centered">HEIGHT</th>
+              </tr>
+              <tr>
+                <th>Aimed ratio:</th>
+                <td>
+                  <input
+                    id="rwidth"
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="Ratio width"
+                    class="form-control"
+                  />
+                </td>
+                <td class="centered">:</td>
+                <td>
+                  <input
+                    id="rheight"
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="Ratio height"
+                    class="form-control"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Pixels of source image:</th>
+                <td>
+                  <input
+                    id="pwidth"
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="Afbeelding-breedte"
+                    class="form-control"
+                    autofocus
+                  />
+                </td>
+                <td class="centered">X</td>
+                <td>
+                  <input
+                    id="pheight"
+                    type="number"
+                    step="any"
+                    min="0"
+                    placeholder="Afbeelding-hoogte"
+                    class="form-control"
+                  />
+                </td>
+              </tr>
+            </table>
+          </form>
+          <span id="sum"></span>
+        </div>
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+          <div class="row">
+            <div class="col-xs-6 centered spacedown">
+              <b>Desired ratio is:</b>
+              <div id="real" style="color:black"></div>
+            </div>
+            <div class="col-xs-6 centered spacedown" style="margin-bottom:15px">
+              <b>Actual ratio is</b>
+              <div id="picture">
+                <span style="color:black">
+                  &nbsp;<span id="yourratio"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+      let sumContainer = document.getElementById('sum');
+      let realContainer = document.getElementById('real');
+      let ratioWidthField = document.getElementById('rwidth');
+      let ratioHeightField = document.getElementById('rheight');
+      let wantedWidthField = document.getElementById('pwidth');
+      let wantedHeightField = document.getElementById('pheight');
+      ratioWidthField.value = 3;
+      ratioHeightField.value = 2;
+      
+      function calculateRatio() {
+        let rwidth = parseInt(ratioWidthField.value);
+        let rheight = parseInt(ratioHeightField.value);
+        let pwidth = wantedWidthField.value;
+        let pheight = wantedHeightField.value;
+
+        let toohigh = false;
+        let toowide = false;
+        let height = pheight / rheight;
+        let width = pwidth / rwidth;
+        
+        let text = "";
+        let sum = 0;
+
+        if (height < width) {
+          toowide = true;
+          text = "width should be: ";
+          sum = pheight * (rwidth / rheight);
+        } else if (width < height) {
+          toohigh = true;
+          text = "height should be: ";
+          sum = pwidth * (rheight / rwidth);
+        } else {
+          /*if your picture is in the exact ratio allready*/
+          text = "keep it that way, it's accurate like this! ";
+          sum = "";
+        }
+        
+        let yourratio = pwidth / pheight;
+
+        let realsum = "";
+        let text2 = "";
+        
+        if (sum != Math.round(sum)) {
+          text2 =
+            "<br><small>Sum is rounded (in this case its better to manually crop the pic by ~1px on the " + (toowide?'width':'height') + " first) the real sum is: </small>";
+          realsum = sum;
+        }
+
+        let valwidth = wantedWidthField.checkValidity();
+        let valheight = wantedHeightField.checkValidity();
+        if (
+          valwidth === true &&
+          valheight === true &&
+          pwidth !== "" &&
+          pheight !== ""
+        ) {
+          sumContainer.innerHTML =
+            text + Math.round(sum) + (text2 != "" ? text2 + realsum : "")
+          ;
+          $("#real").show(300);
+          $("#picture").show(300);
+        } else {
+          sumContainer.innerHTML = "";
+          $("#real").hide(300);
+          $("#picture").hide(300);
+        }
+        let aniratio = float2rat(yourratio).split(":");
+        let realwidth = $("#real").outerWidth();
+        let picturewidth = $("#picture").outerWidth();
+        $("#real").animate(
+          { width: "100%", height: (realwidth / rwidth) * rheight },
+          { duration: 200, queue: false }
+        );
+        $("#real").html("&nbsp;" + rwidth + ":" + rheight + " (" + rwidth / rheight + ")");
+        $("#picture").animate(
+          {
+            width: "100%",
+            height: (picturewidth / pwidth) * pheight,
+            "background-color": "blue"
+          },
+          { duration: 200, queue: false }
+        );
+        $("#yourratio").html(
+          float2rat(yourratio) + " (" + yourratio + ")"
+        );
+      };
+
+      
+      ratioWidthField.addEventListener("change", calculateRatio);
+      ratioHeightField.addEventListener("change", calculateRatio);
+      wantedWidthField.addEventListener("change", calculateRatio);
+      wantedHeightField.addEventListener("change", calculateRatio);
+      ratioWidthField.addEventListener("keyup", calculateRatio);
+      ratioHeightField.addEventListener("keyup", calculateRatio);
+      wantedWidthField.addEventListener("keyup", calculateRatio);
+      wantedHeightField.addEventListener("keyup", calculateRatio);
+                                        
+      function float2rat(x) {
+        let tolerance = 1.0e-6;
+        let h1 = 1;
+        let h2 = 0;
+        let k1 = 0;
+        let k2 = 1;
+        let b = x;
+        do {
+          let a = Math.floor(b);
+          let aux = h1;
+          h1 = a * h1 + h2;
+          h2 = aux;
+          aux = k1;
+          k1 = a * k1 + k2;
+          k2 = aux;
+          b = 1 / (b - a);
+        } while (Math.abs(x - h1 / k1) > x * tolerance);
+
+        return h1 + ":" + k1;
+      }
+    </script>
+  </body>
+</html>

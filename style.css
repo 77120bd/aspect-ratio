@@ -1,0 +1,75 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway);
+
+/***************************************
+		General styles
+***************************************/
+
+/*
+
+*/
+
+body {
+	#background: url('https://cdn.glitch.com/6f34d087-d87b-4ada-8b7f-52f5eed43eca%2Fratios.png?v=1609925527275') no-repeat fixed;
+	background-size: cover;
+  background-color: #222;
+	color: #ccc;
+}
+
+h1,
+h2,
+p,
+#sum {
+	font-family: 'Raleway', sans-serif;
+}
+h1 {
+	font-size: 2.7em;
+}
+h2 {
+	font-size: 1.7em;
+}
+p {
+	font-size: 1.2em;
+}
+
+.centered {
+	text-align: center;
+}
+.justified {
+	text-align: justify;
+}
+
+a {
+	text-decoration: none;
+	color: ;
+}
+
+/***************************************
+		Page styles
+***************************************/
+.table {
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
+#sum {
+	font-size: 1.5em;
+	color: #EEE;
+}
+
+#real{
+	background-color: #428BCA;
+	border: 1px solid black;
+	display: none;
+}
+
+#picture{
+	background-color: #F0AD4E;
+	border: 1px solid black;
+	display: none;
+}
+
+.adsbygoogle{
+	position: fixed;
+	bottom: 5%;
+	left: 50%;
+	margin-left: -364px;
+}
